@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="theme-color" content="#2563EB"/>
+<title>Agora Livre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;height:-webkit-fill-available;overflow:hidden;}
+:root{
+  --blue:#2563EB;--blue-soft:#EFF6FF;--blue-light:#93C5FD;--blue-border:#BFDBFE;
+  --red:#EF4444;--red-soft:#FEE2E2;
+  --green:#22C55E;--green-light:#DCFCE7;--green-border:#BBF7D0;--green-text:#15803D;--green-dark:#166534;
+  --bg:#F8FAFC;--card:#FFFFFF;--surface:#F1F5F9;
+  --text:#1E293B;--muted:#64748B;--faint:#94A3B8;--border:#E2E8F0;--ph:#CBD5E1;
+  --yw:#FEF9C3;--ywt:#854D0E;
+  --sat:env(safe-area-inset-top,0px);
+  --sab:env(safe-area-inset-bottom,0px);
+  --sal:env(safe-area-inset-left,0px);
+  --sar:env(safe-area-inset-right,0px);
+  /* fluid type */
+  --f-xs:clamp(9px,2.2vw,11px);
+  --f-sm:clamp(11px,2.8vw,13px);
+  --f-base:clamp(12px,3.2vw,14px);
+  --f-md:clamp(13px,3.5vw,15px);
+  --f-lg:clamp(15px,4vw,17px);
+  --f-xl:clamp(17px,4.5vw,20px);
+  --f-2xl:clamp(19px,5vw,22px);
+  --f-hero:clamp(52px,14vw,72px);
+  /* fluid spacing */
+  --s-xs:clamp(4px,1vw,6px);
+  --s-sm:clamp(6px,2vw,10px);
+  --s-md:clamp(10px,3vw,14px);
+  --s-lg:clamp(14px,4vw,18px);
+  --s-xl:clamp(18px,5vw,24px);
+  /* fluid radius */
+  --r-sm:clamp(8px,2vw,10px);
+  --r-md:clamp(12px,3vw,14px);
+  --r-lg:clamp(14px,4vw,18px);
+  --r-xl:clamp(18px,5vw,24px);
+  --r-full:999px;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:#D4DCE8;display:flex;justify-content:center;align-items:center;}
+#app{
+  width:100%;max-width:430px;
+  height:100vh;height:100dvh;
+  background:var(--card);
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(0,0,0,.06),0 24px 64px rgba(0,0,0,.15);
+}
+/* screens */
+.screen{display:none;flex-direction:column;width:100%;height:100%;position:absolute;top:0;left:0;background:var(--bg);overflow:hidden;}
+.screen.on{display:flex;animation:fin .22s ease;}
+@keyframes fin{from{opacity:0;transform:translateX(14px);}to{opacity:1;transform:translateX(0);}}
+/* scrollable area */
+.scr{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:var(--s-lg);padding-bottom:calc(var(--s-xl) + var(--sab));display:flex;flex-direction:column;gap:var(--s-md);}
+.scr::-webkit-scrollbar{display:none;}
+/* top bars */
+.sbar{flex-shrink:0;display:flex;justify-content:space-between;align-items:center;padding:calc(var(--sat) + 10px) var(--s-lg) 0;font-size:var(--f-xs);font-weight:600;color:var(--faint);background:var(--card);}
+.sbar-mid{font-size:var(--f-sm);font-weight:700;color:var(--text);}
+.lbar{flex-shrink:0;display:flex;gap:var(--s-xs);padding:var(--s-xs) var(--s-lg);background:var(--card);justify-content:flex-end;border-bottom:1px solid var(--border);}
+.lb{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:var(--r-full);padding:3px clamp(8px,2.5vw,12px);font-size:var(--f-xs);font-weight:700;cursor:pointer;transition:all .15s;}
+.lb.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+/* typography */
+.h1{font-family:'Manrope',sans-serif;font-size:var(--f-2xl);font-weight:800;color:var(--text);line-height:1.3;}
+.h2{font-family:'Manrope',sans-serif;font-size:var(--f-xl);font-weight:800;color:var(--text);line-height:1.3;}
+.body{font-size:var(--f-base);color:var(--muted);line-height:1.6;}
+.lbl{font-size:var(--f-xs);font-weight:700;color:var(--faint);letter-spacing:.8px;text-transform:uppercase;}
+.muted{font-size:var(--f-sm);color:var(--ph);}
+/* buttons */
+.btn{width:100%;border:none;cursor:pointer;font-family:'Manrope',sans-serif;font-size:var(--f-md);font-weight:700;border-radius:var(--r-md);padding:clamp(13px,3.5vw,16px) var(--s-lg);display:flex;align-items:center;justify-content:center;gap:var(--s-sm);transition:all .15s;}
+.btn:active{transform:scale(.97);}
+.btn-blue{background:var(--blue);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.28);}
+.btn-blue:hover{background:#1D4ED8;}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue);}
+.btn-red{background:var(--red);color:#fff;font-weight:800;letter-spacing:.5px;animation:rpulse 2.6s ease-in-out infinite;}
+@keyframes rpulse{0%,100%{box-shadow:0 4px 14px rgba(239,68,68,.3);}50%{box-shadow:0 4px 30px rgba(239,68,68,.55);}}
+.bdot{width:clamp(7px,2vw,9px);height:clamp(7px,2vw,9px);border-radius:50%;background:rgba(255,255,255,.65);flex-shrink:0;animation:blink 1.4s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+/* nav */
+.nav{flex-shrink:0;background:var(--card);border-top:1px solid var(--border);display:flex;padding-top:var(--s-sm);padding-bottom:calc(var(--s-sm) + var(--sab));padding-left:var(--sal);padding-right:var(--sar);}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:var(--f-xs);font-weight:700;color:var(--ph);cursor:pointer;padding:var(--s-xs) 0;transition:color .2s;}
+.ni.on{color:var(--blue);}
+.nic{font-size:clamp(17px,4.5vw,21px);}
+.nidot{width:4px;height:4px;border-radius:50%;background:var(--blue);margin-top:1px;}
+/* page header */
+.phdr{flex-shrink:0;padding:var(--s-md) var(--s-lg) 0;display:flex;align-items:center;gap:var(--s-md);}
+.back{width:clamp(32px,8vw,38px);height:clamp(32px,8vw,38px);background:var(--surface);border:none;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:var(--f-lg);color:var(--muted);cursor:pointer;flex-shrink:0;}
+/* onboarding */
+.obw{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--s-xl);gap:var(--s-lg);text-align:center;}
+.obico{font-size:clamp(48px,14vw,72px);}
+.obdots{display:flex;gap:6px;}
+.odd{width:clamp(7px,2vw,9px);height:clamp(7px,2vw,9px);border-radius:50%;background:var(--border);}
+.odd.d{background:var(--blue);opacity:.5;}
+.odd.c{width:clamp(20px,6vw,26px);border-radius:4px;background:var(--blue);}
+/* choice cards */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-md);width:100%;}
+.ccard{background:var(--surface);border:2px solid var(--border);border-radius:var(--r-lg);padding:var(--s-xl) var(--s-md);text-align:center;cursor:pointer;transition:all .2s;}
+.ccard:hover,.ccard.sel{border-color:var(--blue);background:var(--blue-soft);}
+.cico{font-size:clamp(28px,8vw,40px);display:block;margin-bottom:var(--s-sm);}
+.clbl{font-size:var(--f-md);font-weight:700;color:var(--text);}
+.ccard.sel .clbl{color:var(--blue);}
+/* pills */
+.pills{display:flex;flex-wrap:wrap;gap:var(--s-sm);}
+.pill{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-full);padding:clamp(6px,1.8vw,9px) clamp(10px,3vw,16px);font-size:var(--f-sm);font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.pill:hover,.pill.sel{background:var(--blue-soft);border-color:var(--blue);color:#1D4ED8;}
+/* home */
+.hhdr{padding:var(--s-md) var(--s-lg) 0;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.hava{width:clamp(36px,9vw,44px);height:clamp(36px,9vw,44px);border-radius:50%;background:var(--blue-soft);display:flex;align-items:center;justify-content:center;font-size:var(--f-sm);font-weight:700;color:#1D4ED8;border:1.5px solid var(--blue-border);flex-shrink:0;}
+/* counter card */
+.ctrc{background:var(--blue);border-radius:var(--r-xl);padding:var(--s-xl);position:relative;overflow:hidden;}
+.ctrc::before{content:'';position:absolute;top:-18px;right:-18px;width:clamp(70px,20vw,100px);height:clamp(70px,20vw,100px);border-radius:50%;background:rgba(255,255,255,.07);}
+.ctrc::after{content:'';position:absolute;bottom:-22px;left:18px;width:clamp(50px,14vw,74px);height:clamp(50px,14vw,74px);border-radius:50%;background:rgba(255,255,255,.04);}
+.ctrnum{font-family:'Manrope',sans-serif;font-size:var(--f-hero);font-weight:800;color:#fff;line-height:1;letter-spacing:-2px;}
+/* mini cards */
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-sm);}
+.mcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:var(--s-md);cursor:pointer;transition:border-color .2s;}
+.mcard:hover{border-color:var(--blue);}
+.mico{width:clamp(28px,7vw,36px);height:clamp(28px,7vw,36px);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:clamp(13px,3.5vw,16px);margin-bottom:var(--s-sm);}
+/* week */
+.wrow{display:flex;gap:clamp(3px,1vw,6px);}
+.wd{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.wdl{font-size:var(--f-xs);font-weight:700;color:var(--ph);}
+.wdb{width:clamp(24px,7vw,32px);height:clamp(24px,7vw,32px);border-radius:clamp(6px,1.5vw,9px);display:flex;align-items:center;justify-content:center;font-size:var(--f-xs);font-weight:700;}
+.ok{background:var(--green-light);color:var(--green-text);}
+.warn{background:var(--yw);color:var(--ywt);}
+.today{background:var(--blue);color:#fff;}
+.empty{background:var(--surface);color:var(--ph);}
+/* insight strip */
+.istrip{background:#F0FDF4;border:1px solid var(--green-border);border-radius:var(--r-md);padding:var(--s-md);display:flex;gap:var(--s-sm);align-items:flex-start;}
+.iico{width:clamp(26px,7vw,32px);height:clamp(26px,7vw,32px);background:var(--green-border);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:clamp(12px,3.5vw,16px);flex-shrink:0;}
+/* mood */
+.moodrow{display:flex;gap:var(--s-sm);}
+.moodc{flex:1;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-md);padding:var(--s-md) var(--s-xs);text-align:center;cursor:pointer;transition:all .2s;}
+.moodc:hover,.moodc.sel{border-color:var(--blue);background:var(--blue-soft);}
+.moodico{font-size:clamp(18px,5vw,24px);display:block;margin-bottom:4px;}
+.moodlbl{font-size:var(--f-xs);font-weight:700;color:var(--muted);}
+.moodc.sel .moodlbl{color:var(--blue);}
+/* slider */
+.slrow{display:flex;flex-direction:column;gap:var(--s-sm);}
+.sltop{display:flex;justify-content:space-between;align-items:center;}
+.slval{font-family:'Manrope',sans-serif;font-size:clamp(22px,6.5vw,28px);font-weight:800;color:var(--blue);}
+input[type=range]{width:100%;height:5px;background:var(--border);border-radius:3px;-webkit-appearance:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:clamp(18px,5vw,22px);height:clamp(18px,5vw,22px);border-radius:50%;background:var(--blue);border:2px solid #fff;box-shadow:0 0 0 3px var(--blue-border);}
+/* insight box */
+.ibox{background:#F0FDF4;border:1px solid var(--green-border);border-radius:var(--r-md);padding:var(--s-md);display:flex;gap:var(--s-sm);align-items:flex-start;}
+/* crisis */
+.crbadge{background:var(--red-soft);border-radius:var(--r-sm);padding:4px clamp(8px,2.5vw,12px);font-size:var(--f-sm);font-weight:700;color:#991B1B;}
+.crstep{font-size:var(--f-xs);font-weight:700;color:var(--ph);letter-spacing:1px;text-transform:uppercase;text-align:center;}
+.crmsg{font-family:'Manrope',sans-serif;font-size:var(--f-xl);font-weight:800;color:var(--text);line-height:1.35;}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-sm);}
+.ac{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-md);padding:var(--s-lg) var(--s-sm);text-align:center;cursor:pointer;transition:all .2s;}
+.ac:hover,.ac.sel{border-color:var(--blue);background:var(--blue-soft);}
+.aico{font-size:clamp(20px,5.5vw,26px);display:block;margin-bottom:5px;}
+.atxt{font-size:var(--f-sm);font-weight:600;color:var(--text);}
+.ac.sel .atxt{color:var(--blue);}
+.tbox{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:var(--s-xl);text-align:center;}
+.tnum{font-family:'Manrope',sans-serif;font-size:clamp(44px,12vw,58px);font-weight:800;color:var(--blue);letter-spacing:-2px;}
+.tbar{margin-top:var(--s-md);background:var(--border);border-radius:3px;height:4px;overflow:hidden;}
+.tbarf{height:100%;background:var(--blue);border-radius:3px;transition:width 1s linear;}
+.pbox{background:var(--blue-soft);border:1px solid var(--blue-border);border-radius:var(--r-md);padding:var(--s-md);font-size:var(--f-sm);color:#1D4ED8;line-height:1.6;font-weight:500;}
+.reswrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--s-lg);text-align:center;padding:var(--s-xl);}
+/* progress */
+.srow{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-sm);}
+.sb{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:var(--s-md) var(--s-sm);text-align:center;}
+.sn{font-family:'Manrope',sans-serif;font-size:clamp(22px,6.5vw,30px);font-weight:800;color:var(--text);}
+.sl{font-size:var(--f-xs);color:var(--faint);font-weight:600;margin-top:2px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--s-lg);}
+.chart{display:flex;align-items:flex-end;gap:clamp(3px,1vw,6px);height:clamp(60px,16vw,90px);}
+.bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.bbar{width:100%;border-radius:4px 4px 0 0;min-height:4px;}
+.bday{font-size:var(--f-xs);color:var(--ph);font-weight:600;}
+.lkhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s-md);}
+.ptag{background:var(--blue-soft);border-radius:var(--r-sm);padding:3px clamp(6px,2vw,10px);font-size:var(--f-xs);font-weight:700;color:var(--blue);}
+.blr{opacity:.25;filter:blur(3px);pointer-events:none;margin-bottom:var(--s-sm);}
+.irow{display:flex;gap:var(--s-sm);padding:var(--s-sm) 0;border-bottom:1px solid var(--surface);}
+/* premium */
+.phero{background:var(--blue);border-radius:var(--r-xl);padding:var(--s-xl);text-align:center;}
+.flist{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;}
+.fr{display:flex;align-items:flex-start;gap:var(--s-md);padding:var(--s-md) var(--s-lg);border-bottom:1px solid var(--surface);}
+.fico{width:clamp(28px,7vw,34px);height:clamp(28px,7vw,34px);border-radius:var(--r-sm);background:var(--blue-soft);display:flex;align-items:center;justify-content:center;font-size:clamp(13px,3.5vw,16px);flex-shrink:0;}
+.planrow{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-sm);}
+.planc{background:var(--surface);border:2px solid var(--border);border-radius:var(--r-lg);padding:var(--s-lg) var(--s-md);text-align:center;cursor:pointer;position:relative;transition:all .2s;}
+.planc:hover,.planc.sel{border-color:var(--blue);background:var(--blue-soft);}
+.popbadge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:var(--f-xs);font-weight:800;padding:3px clamp(8px,2.5vw,12px);border-radius:var(--r-full);white-space:nowrap;}
+/* relapse */
+.rbox{background:var(--blue-soft);border:1px solid var(--blue-border);border-radius:var(--r-md);padding:var(--s-md);font-size:var(--f-sm);color:#1D4ED8;line-height:1.6;font-weight:500;}
+.donewrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--s-lg);text-align:center;padding:var(--s-xl);}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="sbar">
+    <span id="clock">9:41</span>
+    <span class="sbar-mid">Agora Livre</span>
+    <span>📶</span>
+  </div>
+  <div class="lbar">
+    <button class="lb on" onclick="setL('pt')">PT</button>
+    <button class="lb" onclick="setL('en')">EN</button>
+    <button class="lb" onclick="setL('es')">ES</button>
+    <button class="lb" onclick="setL('nl')">NL</button>
+    <button class="lb" onclick="setL('ro')">RO</button>
+  </div>
+
+  <!-- OB1 -->
+  <div class="screen on" id="s-ob1">
+    <div class="obw">
+      <div class="obdots"><div class="odd c"></div><div class="odd"></div><div class="odd"></div></div>
+      <div class="obico">🌅</div>
+      <p class="h1" id="o1t">Você não precisa passar por isso sozinho.</p>
+      <p class="body" id="o1s">Este app é seu companheiro no caminho para o controle.</p>
+      <button class="btn btn-blue" id="o1b" onclick="go('s-ob2')">Começar</button>
+      <p class="muted">Sem julgamento. Sem cobranças.</p>
+    </div>
+  </div>
+
+  <!-- OB2 -->
+  <div class="screen" id="s-ob2">
+    <div class="obw">
+      <div class="obdots"><div class="odd d"></div><div class="odd c"></div><div class="odd"></div></div>
+      <p class="h1" id="o2t">O que você quer controlar?</p>
+      <p class="body">Isso personaliza o app para você.</p>
+      <div class="cgrid">
+        <div class="ccard" onclick="selC(this)"><span class="cico">🍺</span><span class="clbl" id="o2a">Álcool</span></div>
+        <div class="ccard" onclick="selC(this)"><span class="cico">💊</span><span class="clbl" id="o2b">Drogas</span></div>
+      </div>
+      <button class="btn btn-blue" id="o2btn" onclick="go('s-ob3')">Continuar</button>
+    </div>
+  </div>
+
+  <!-- OB3 -->
+  <div class="screen" id="s-ob3" style="background:var(--card)">
+    <div style="padding:var(--s-lg) var(--s-lg) 0;flex-shrink:0">
+      <div class="obdots" style="margin-bottom:var(--s-md)"><div class="odd d"></div><div class="odd d"></div><div class="odd c"></div></div>
+      <p class="h2" id="o3t">Isso nos ajuda a entender você.</p>
+      <p class="body" id="o3s" style="margin-top:4px">Respostas rápidas — sem julgamento.</p>
+    </div>
+    <div class="scr">
+      <p class="lbl" id="o3q1">Quando sente mais vontade?</p>
+      <div class="pills"><div class="pill sel" onclick="tog(this)">🌙 Noite</div><div class="pill" onclick="tog(this)">🧍 Sozinho</div><div class="pill" onclick="tog(this)">👥 Social</div><div class="pill" onclick="tog(this)">😤 Estresse</div></div>
+      <p class="lbl" id="o3q2">O que causa recaída?</p>
+      <div class="pills"><div class="pill" onclick="tog(this)">💔 Emocional</div><div class="pill" onclick="tog(this)">🔄 Hábito</div><div class="pill" onclick="tog(this)">😴 Cansaço</div><div class="pill" onclick="tog(this)">👥 Social</div></div>
+      <p class="lbl" id="o3q3">Quando a vontade vem, o que precisa?</p>
+      <div class="pills"><div class="pill sel" onclick="tog(this)">🤝 Apoio</div><div class="pill" onclick="tog(this)">🎯 Distração</div><div class="pill" onclick="tog(this)">🔒 Controle</div><div class="pill" onclick="tog(this)">🤫 Silêncio</div></div>
+      <button class="btn btn-blue" id="o3b" onclick="go('s-home')" style="margin-top:auto">Iniciar minha jornada →</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen" id="s-home">
+    <div class="hhdr">
+      <div><div class="lbl" style="text-transform:none;letter-spacing:0;font-size:var(--f-sm)" id="hhi">Olá, bom dia 🔥</div><div style="font-family:'Manrope',sans-serif;font-size:var(--f-lg);font-weight:700;color:var(--text);margin-top:2px" id="hwel">Bem-vindo de volta</div></div>
+      <div class="hava">AL</div>
+    </div>
+    <div class="scr">
+      <div class="ctrc">
+        <div class="lbl" style="color:var(--blue-light);margin-bottom:4px">✦ SEQUÊNCIA ATUAL</div>
+        <div class="ctrnum">7</div>
+        <div style="font-size:var(--f-sm);color:var(--blue-border);margin-top:3px" id="hunit">dias sem recaída</div>
+        <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:var(--r-full);padding:4px clamp(10px,3vw,14px);margin-top:var(--s-md)"><span style="font-size:var(--f-xs);color:#DBEAFE;font-weight:600" id="hbadge">🏆 Recorde pessoal: 14 dias</span></div>
+      </div>
+      <button class="btn btn-red" onclick="go('s-crisis')" id="hcbtn"><div class="bdot"></div><span id="hctxt">ESTOU EM CRISE</span></button>
+      <div class="mrow">
+        <div class="mcard" onclick="gT('checkin')"><div class="mico" style="background:var(--blue-soft)">📋</div><div style="font-size:var(--f-sm);font-weight:700;color:var(--text)" id="hcit">Check-in</div><div style="font-size:var(--f-xs);color:var(--faint);margin-top:2px" id="hcis">Como está hoje?</div></div>
+        <div class="mcard" onclick="gT('progress')"><div class="mico" style="background:var(--green-light)">📈</div><div style="font-size:var(--f-sm);font-weight:700;color:var(--text)" id="hprt">Progresso</div><div style="font-size:var(--f-xs);color:var(--faint);margin-top:2px" id="hprs">Ver evolução</div></div>
+      </div>
+      <div>
+        <p class="lbl" id="hwk" style="margin-bottom:var(--s-sm)">Esta semana</p>
+        <div class="wrow">
+          <div class="wd"><div class="wdl">S</div><div class="wdb ok">✓</div></div>
+          <div class="wd"><div class="wdl">T</div><div class="wdb ok">✓</div></div>
+          <div class="wd"><div class="wdl">Q</div><div class="wdb warn">!</div></div>
+          <div class="wd"><div class="wdl">Q</div><div class="wdb ok">✓</div></div>
+          <div class="wd"><div class="wdl">S</div><div class="wdb ok">✓</div></div>
+          <div class="wd"><div class="wdl">S</div><div class="wdb ok">✓</div></div>
+          <div class="wd"><div class="wdl">D</div><div class="wdb today">●</div></div>
+        </div>
+      </div>
+      <div class="istrip">
+        <div class="iico">💡</div>
+        <div><div class="lbl" style="color:var(--green-text);margin-bottom:2px">Insight</div><div style="font-size:var(--f-sm);color:var(--green-dark);line-height:1.5;font-weight:500" id="hitxt">Você está acima da média. Final de semana tende a ser mais fácil.</div></div>
+      </div>
+      <button class="btn btn-ghost" onclick="go('s-relapse')" style="font-size:var(--f-sm)">Registrar recaída</button>
+    </div>
+    <div class="nav">
+      <div class="ni on" onclick="gT('home')"><span class="nic">🏠</span><span id="nh">Início</span><div class="nidot"></div></div>
+      <div class="ni" onclick="gT('checkin')"><span class="nic">📋</span><span id="nci">Check-in</span></div>
+      <div class="ni" onclick="gT('progress')"><span class="nic">📊</span><span id="npr">Progresso</span></div>
+      <div class="ni" onclick="gT('premium')"><span class="nic">⭐</span><span id="npm">Premium</span></div>
+    </div>
+  </div>
+
+  <!-- CHECKIN -->
+  <div class="screen" id="s-checkin">
+    <div class="phdr"><button class="back" onclick="gT('home')">←</button><span class="lbl">Check-in diário</span></div>
+    <div class="scr">
+      <p class="h2" id="cit">Como você está hoje?</p>
+      <p class="body" style="margin-top:-8px">30 segundos. Sem julgamento.</p>
+      <div class="moodrow">
+        <div class="moodc" onclick="selM(this)"><span class="moodico">😌</span><span class="moodlbl" id="cm1">Bem</span></div>
+        <div class="moodc" onclick="selM(this)"><span class="moodico">😐</span><span class="moodlbl" id="cm2">Neutro</span></div>
+        <div class="moodc" onclick="selM(this)"><span class="moodico">😔</span><span class="moodlbl" id="cm3">Mal</span></div>
+      </div>
+      <p class="lbl" id="ceq">Emoção principal</p>
+      <div class="pills"><div class="pill" onclick="tog(this)">😤 Estresse</div><div class="pill sel" onclick="tog(this)">😰 Ansiedade</div><div class="pill" onclick="tog(this)">😑 Tédio</div><div class="pill" onclick="tog(this)">🥺 Solidão</div></div>
+      <div class="slrow">
+        <div class="sltop"><span class="lbl">Intensidade</span><span class="slval" id="cval">3</span></div>
+        <input type="range" min="0" max="10" value="3" step="1" oninput="onSl(this.value)">
+        <div style="display:flex;justify-content:space-between"><span class="muted">0</span><span class="muted">10</span></div>
+      </div>
+      <div class="ibox"><div style="font-size:clamp(13px,4vw,17px);flex-shrink:0">💡</div><div><div class="lbl" style="color:var(--green-text);margin-bottom:2px">Insight</div><div style="font-size:var(--f-sm);color:var(--green-dark);line-height:1.5;font-weight:500" id="citxt">Intensidade leve. Ótimo momento para fortalecer hábitos positivos.</div></div></div>
+      <button class="btn btn-blue" id="cisave" onclick="saveCi()">Salvar check-in</button>
+    </div>
+    <div class="nav">
+      <div class="ni" onclick="gT('home')"><span class="nic">🏠</span><span>Início</span></div>
+      <div class="ni on"><span class="nic">📋</span><span>Check-in</span><div class="nidot"></div></div>
+      <div class="ni" onclick="gT('progress')"><span class="nic">📊</span><span>Progresso</span></div>
+      <div class="ni" onclick="gT('premium')"><span class="nic">⭐</span><span>Premium</span></div>
+    </div>
+  </div>
+
+  <!-- CRISIS -->
+  <div class="screen" id="s-crisis" style="background:var(--card)">
+    <div class="phdr"><button class="back" onclick="resetCr();gT('home')">←</button><div class="crbadge">⚡ Modo Crise</div></div>
+    <div class="scr">
+      <div id="cs1" style="display:flex;flex-direction:column;gap:var(--s-md)">
+        <p class="crstep">PASSO 1 DE 3</p>
+        <p class="crmsg">O que está acontecendo agora?</p>
+        <div class="pills"><div class="pill" onclick="tog(this)">😤 Estresse</div><div class="pill sel" onclick="tog(this)">😰 Ansiedade</div><div class="pill" onclick="tog(this)">😑 Tédio</div><div class="pill" onclick="tog(this)">🥺 Solidão</div></div>
+        <div class="slrow">
+          <div class="sltop"><span class="lbl">Intensidade (0–10)</span><span class="slval" id="crval">7</span></div>
+          <input type="range" min="0" max="10" value="7" step="1" oninput="document.getElementById('crval').textContent=this.value">
+        </div>
+        <button class="btn btn-blue" onclick="crS2()">Continuar →</button>
+      </div>
+      <div id="cs2" style="display:none;flex-direction:column;gap:var(--s-md)">
+        <p class="crstep">PASSO 2 DE 3</p>
+        <p class="crmsg">Isso é um impulso, não uma decisão definitiva.</p>
+        <p class="body">Escolha uma ação agora:</p>
+        <div class="agrid">
+          <div class="ac" onclick="selA(this)"><span class="aico">🚶</span><span class="atxt">Sair do ambiente</span></div>
+          <div class="ac" onclick="selA(this)"><span class="aico">💧</span><span class="atxt">Beber água</span></div>
+          <div class="ac sel" onclick="selA(this)"><span class="aico">🫁</span><span class="atxt">Respirar 30s</span></div>
+          <div class="ac" onclick="selA(this)"><span class="aico">⏳</span><span class="atxt">Esperar 10 min</span></div>
+        </div>
+        <button class="btn btn-blue" onclick="crS3()">Iniciar timer →</button>
+      </div>
+      <div id="cs3" style="display:none;flex-direction:column;gap:var(--s-md)">
+        <p class="crstep">PASSO 3 DE 3</p>
+        <p class="crmsg">Vamos passar por esses minutos juntos.</p>
+        <div class="tbox"><div class="tnum" id="tdisp">1:00</div><div style="font-size:var(--f-sm);color:var(--faint);margin-top:3px">segundos restantes</div><div class="tbar"><div class="tbarf" id="tfill" style="width:100%"></div></div></div>
+        <div class="pbox">Você costuma sentir isso à noite quando está sozinho. Você já passou por isso antes — e passou. Um minuto de cada vez.</div>
+        <button class="btn btn-blue" onclick="crRes()">A vontade diminuiu? ✓</button>
+        <button class="btn btn-ghost" onclick="crS2()" style="font-size:var(--f-sm)">Ainda com vontade — nova ação</button>
+      </div>
+      <div id="cres" style="display:none" class="reswrap">
+        <div style="font-size:clamp(56px,16vw,80px)">💪</div>
+        <p style="font-family:'Manrope',sans-serif;font-size:var(--f-2xl);font-weight:800;color:var(--green)">Você superou esse momento!</p>
+        <p class="body">Cada vez que você resiste, fica mais forte. Isso ficou registrado.</p>
+        <button class="btn btn-blue" onclick="resetCr();gT('home')" style="width:100%">Voltar ao início</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="screen" id="s-progress">
+    <div class="phdr"><button class="back" onclick="gT('home')">←</button><p class="h2" style="font-size:var(--f-xl)">Progresso</p></div>
+    <div class="scr">
+      <div class="srow">
+        <div class="sb"><div class="sn">7</div><div class="sl">Dias sóbrio</div></div>
+        <div class="sb"><div class="sn" style="color:var(--green-text)">-40%</div><div class="sl">Recaídas</div></div>
+        <div class="sb"><div class="sn" style="color:var(--blue)">3</div><div class="sl">Crises evitadas</div></div>
+      </div>
+      <div class="card">
+        <p class="lbl" style="margin-bottom:var(--s-md)">Intensidade — 7 dias</p>
+        <div class="chart">
+          <div class="bcol"><div class="bbar" style="height:65%;background:var(--blue-border)"></div><div class="bday">S</div></div>
+          <div class="bcol"><div class="bbar" style="height:45%;background:var(--blue-border)"></div><div class="bday">T</div></div>
+          <div class="bcol"><div class="bbar" style="height:82%;background:#FCA5A5"></div><div class="bday">Q</div></div>
+          <div class="bcol"><div class="bbar" style="height:50%;background:var(--blue-border)"></div><div class="bday">Q</div></div>
+          <div class="bcol"><div class="bbar" style="height:35%;background:var(--blue-border)"></div><div class="bday">S</div></div>
+          <div class="bcol"><div class="bbar" style="height:22%;background:var(--green-border)"></div><div class="bday">S</div></div>
+          <div class="bcol"><div class="bbar" style="height:14%;background:var(--green-border)"></div><div class="bday">D</div></div>
+        </div>
+      </div>
+      <div class="card" style="display:flex;gap:var(--s-lg);align-items:center">
+        <span style="font-size:clamp(28px,8vw,38px)">🏆</span>
+        <div><div class="lbl" style="margin-bottom:2px">Maior sequência</div><div style="font-family:'Manrope',sans-serif;font-size:var(--f-2xl);font-weight:800;color:var(--text)">14 dias</div></div>
+      </div>
+      <div class="card">
+        <div class="lkhdr"><span style="font-size:var(--f-md);font-weight:700;color:var(--text)">Insights inteligentes</span><div class="ptag">⭐ Premium</div></div>
+        <div class="blr">
+          <div class="irow"><span style="font-size:var(--f-lg)">🕐</span><div><div style="font-size:var(--f-xs);font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px">Padrão</div><div style="font-size:var(--f-sm);color:var(--text);margin-top:2px;font-weight:500">Quinta à noite é seu maior risco.</div></div></div>
+          <div class="irow"><span style="font-size:var(--f-lg)">😰</span><div><div style="font-size:var(--f-xs);font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px">Gatilho</div><div style="font-size:var(--f-sm);color:var(--text);margin-top:2px;font-weight:500">Você recai mais quando está ansioso e sozinho.</div></div></div>
+        </div>
+        <button class="btn btn-blue" onclick="gT('premium')">Desbloquear insights →</button>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="ni" onclick="gT('home')"><span class="nic">🏠</span><span>Início</span></div>
+      <div class="ni" onclick="gT('checkin')"><span class="nic">📋</span><span>Check-in</span></div>
+      <div class="ni on"><span class="nic">📊</span><span>Progresso</span><div class="nidot"></div></div>
+      <div class="ni" onclick="gT('premium')"><span class="nic">⭐</span><span>Premium</span></div>
+    </div>
+  </div>
+
+  <!-- PREMIUM -->
+  <div class="screen" id="s-premium">
+    <div class="phdr"><button class="back" onclick="gT('home')">←</button><span class="lbl">Premium</span></div>
+    <div class="scr">
+      <div class="phero"><div style="font-size:clamp(32px,9vw,44px);margin-bottom:var(--s-sm)">⭐</div><p style="font-family:'Manrope',sans-serif;font-size:var(--f-xl);font-weight:800;color:#fff;line-height:1.3;margin-bottom:4px" id="pmt">Entenda seus padrões. Tenha controle.</p><p style="font-size:var(--f-sm);color:var(--blue-light)">Insights baseados no seu comportamento real.</p></div>
+      <div class="flist">
+        <div class="fr"><div class="fico">🧠</div><div><div style="font-size:var(--f-md);font-weight:700;color:var(--text)">Insights inteligentes</div><div style="font-size:var(--f-xs);color:var(--faint);margin-top:2px">Padrões detectados automaticamente</div></div></div>
+        <div class="fr"><div class="fico">⚠️</div><div><div style="font-size:var(--f-md);font-weight:700;color:var(--text)">Alertas personalizados</div><div style="font-size:var(--f-xs);color:var(--faint);margin-top:2px">Aviso antes do horário de risco</div></div></div>
+        <div class="fr"><div class="fico">📊</div><div><div style="font-size:var(--f-md);font-weight:700;color:var(--text)">Análise de recaídas</div><div style="font-size:var(--f-xs);color:var(--faint);margin-top:2px">O que causou e como evitar</div></div></div>
+        <div class="fr"><div class="fico">🎯</div><div><div style="font-size:var(--f-md);font-weight:700;color:var(--text)">Metas personalizadas</div><div style="font-size:var(--f-xs);color:var(--faint);margin-top:2px">Desafios adaptados ao seu perfil</div></div></div>
+      </div>
+      <div class="planrow" style="margin-top:var(--s-sm)">
+        <div class="planc" onclick="selP(this)"><div style="font-size:var(--f-xs);color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Mensal</div><div style="font-family:'Manrope',sans-serif;font-size:clamp(18px,5.5vw,24px);font-weight:800;color:var(--text)" id="ppr1">R$9,90<span style="font-size:var(--f-xs);font-weight:400;color:var(--faint)">/mês</span></div></div>
+        <div class="planc sel" onclick="selP(this)" style="margin-top:12px"><div class="popbadge">MELHOR VALOR</div><div style="font-size:var(--f-xs);color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Anual</div><div style="font-family:'Manrope',sans-serif;font-size:clamp(18px,5.5vw,24px);font-weight:800;color:var(--text)" id="ppr2">R$47,99<span style="font-size:var(--f-xs);font-weight:400;color:var(--faint)">/ano</span></div><div style="font-size:var(--f-xs);color:var(--green-text);font-weight:700;margin-top:4px">Economize 59%</div></div>
+      </div>
+      <button class="btn btn-blue">Assinar via Google Play</button>
+      <button class="btn btn-ghost" style="font-size:var(--f-sm)">Restaurar compra</button>
+      <p style="font-size:var(--f-xs);color:var(--ph);text-align:center;line-height:1.7">Cobrado pelo Google Play. Cancele a qualquer momento nas configurações da Play Store.</p>
+    </div>
+    <div class="nav">
+      <div class="ni" onclick="gT('home')"><span class="nic">🏠</span><span>Início</span></div>
+      <div class="ni" onclick="gT('checkin')"><span class="nic">📋</span><span>Check-in</span></div>
+      <div class="ni" onclick="gT('progress')"><span class="nic">📊</span><span>Progresso</span></div>
+      <div class="ni on"><span class="nic">⭐</span><span>Premium</span><div class="nidot"></div></div>
+    </div>
+  </div>
+
+  <!-- RELAPSE -->
+  <div class="screen" id="s-relapse" style="background:var(--card)">
+    <div class="phdr"><button class="back" onclick="gT('home')">←</button><p class="h2" style="font-size:var(--f-xl)">Registrar recaída</p></div>
+    <div class="scr">
+      <p class="body">Vamos entender o que aconteceu.</p>
+      <div class="rbox">💙 Registrar é um ato de coragem, não de derrota. Isso nos ajuda a entender — para evitar na próxima vez.</div>
+      <p class="lbl">Quando foi?</p>
+      <div class="pills"><div class="pill" onclick="sel1(this)">🕐 Agora</div><div class="pill" onclick="sel1(this)">📅 Antes</div></div>
+      <p class="lbl">Onde estava?</p>
+      <div class="pills"><div class="pill" onclick="sel1(this)">🏠 Em casa</div><div class="pill" onclick="sel1(this)">💼 No trabalho</div><div class="pill" onclick="sel1(this)">👥 Social</div><div class="pill" onclick="sel1(this)">📍 Outro</div></div>
+      <p class="lbl">Emoção principal</p>
+      <div class="pills"><div class="pill" onclick="tog(this)">😤 Estresse</div><div class="pill" onclick="tog(this)">😰 Ansiedade</div><div class="pill" onclick="tog(this)">😑 Tédio</div><div class="pill" onclick="tog(this)">🥺 Solidão</div></div>
+      <div class="slrow"><div class="sltop"><span class="lbl">Intensidade</span><span class="slval" id="rlval">5</span></div><input type="range" min="0" max="10" value="5" step="1" oninput="document.getElementById('rlval').textContent=this.value"></div>
+      <button class="btn btn-blue" onclick="saveRl()">Salvar registro</button>
+      <button class="btn btn-ghost" onclick="gT('home')" style="font-size:var(--f-sm)">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- RELAPSE DONE -->
+  <div class="screen" id="s-rl-done">
+    <div class="donewrap">
+      <div style="font-size:clamp(52px,15vw,72px)">📝</div>
+      <p class="h2">Obrigado por registrar.</p>
+      <p class="body">Isso não apaga o progresso. Cada registro ajuda a entender o que aconteceu — para não se repetir.</p>
+      <button class="btn btn-blue" onclick="gT('home')" style="width:100%">Voltar ao início</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// i18n
+const L={
+  pt:{crisis:'ESTOU EM CRISE',o1t:'Você não precisa passar por isso sozinho.',o1b:'Começar',o2t:'O que você quer controlar?',o2b:'Continuar',o2a:'Álcool',o2bx:'Drogas',o3t:'Isso nos ajuda a entender você.',o3s:'Respostas rápidas — sem julgamento.',o3q1:'Quando sente mais vontade?',o3q2:'O que causa recaída?',o3q3:'Quando a vontade vem, o que precisa?',o3b:'Iniciar minha jornada →',hi:'Olá, bom dia 🔥',wel:'Bem-vindo de volta',unit:'dias sem recaída',badge:'🏆 Recorde pessoal: 14 dias',nh:'Início',nci:'Check-in',npr:'Progresso',npm:'Premium'},
+  en:{crisis:'I AM IN CRISIS',o1t:"You don't have to go through this alone.",o1b:'Get Started',o2t:'What do you want to control?',o2b:'Continue',o2a:'Alcohol',o2bx:'Drugs',o3t:'This helps us understand you better.',o3s:'Quick answers — no judgment.',o3q1:'When do you feel the urge most?',o3q2:'What usually triggers a relapse?',o3q3:'When the urge comes, what do you need?',o3b:'Start my journey →',hi:'Hello, good morning 🔥',wel:'Welcome back',unit:'days without relapse',badge:'🏆 Personal best: 14 days',nh:'Home',nci:'Check-in',npr:'Progress',npm:'Premium'},
+  es:{crisis:'ESTOY EN CRISIS',o1t:'No tienes que pasar por esto solo.',o1b:'Comenzar',o2t:'¿Qué quieres controlar?',o2b:'Continuar',o2a:'Alcohol',o2bx:'Drogas',o3t:'Esto nos ayuda a entenderte mejor.',o3s:'Respuestas rápidas — sin juicio.',o3q1:'¿Cuándo sientes más ganas?',o3q2:'¿Qué suele causar recaída?',o3q3:'Cuando aparece el impulso, ¿qué necesitas?',o3b:'Iniciar mi camino →',hi:'Hola, buenos días 🔥',wel:'Bienvenido de nuevo',unit:'días sin recaída',badge:'🏆 Mejor racha: 14 días',nh:'Inicio',nci:'Check-in',npr:'Progreso',npm:'Premium'},
+  nl:{crisis:'IK HEB EEN CRISIS',o1t:'Je hoeft hier niet alleen doorheen te gaan.',o1b:'Beginnen',o2t:'Wat wil je beheersen?',o2b:'Doorgaan',o2a:'Alcohol',o2bx:'Drugs',o3t:'Dit helpt ons je beter te begrijpen.',o3s:'Snelle antwoorden — zonder oordeel.',o3q1:'Wanneer voel je de drang het meest?',o3q2:'Wat veroorzaakt terugval?',o3q3:'Wanneer de drang komt, wat heb je nodig?',o3b:'Begin mijn reis →',hi:'Hallo, goedemorgen 🔥',wel:'Welkom terug',unit:'dagen zonder terugval',badge:'🏆 Beste reeks: 14 dagen',nh:'Thuis',nci:'Check-in',npr:'Voortgang',npm:'Premium'},
+  ro:{crisis:'SUNT ÎN CRIZĂ',o1t:'Nu trebuie să treci prin asta singur.',o1b:'Începe',o2t:'Ce vrei să controlezi?',o2b:'Continuă',o2a:'Alcool',o2bx:'Droguri',o3t:'Asta ne ajută să te înțelegem mai bine.',o3s:'Răspunsuri rapide — fără judecată.',o3q1:'Când simți cel mai mult impulsul?',o3q2:'Ce declanșează recăderea?',o3q3:'Când apare impulsul, de ce ai nevoie?',o3b:'Începe călătoria →',hi:'Salut, bună dimineața 🔥',wel:'Bine ai revenit',unit:'zile fără recădere',badge:'🏆 Record: 14 zile',nh:'Acasă',nci:'Check-in',npr:'Progres',npm:'Premium'}
+};
+let lang='pt';
+function _s(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function setL(l){
+  lang=l;
+  document.querySelectorAll('.lb').forEach(b=>b.classList.remove('on'));
+  document.querySelector('.lb[onclick="setL(\''+l+'\')"]').classList.add('on');
+  const t=L[l];
+  _s('o1t',t.o1t);_s('o1b',t.o1b);_s('o2t',t.o2t);_s('o2btn',t.o2b);_s('o2a',t.o2a);_s('o2b',t.o2bx);
+  _s('o3t',t.o3t);_s('o3s',t.o3s);_s('o3q1',t.o3q1);_s('o3q2',t.o3q2);_s('o3q3',t.o3q3);_s('o3b',t.o3b);
+  _s('hhi',t.hi);_s('hwel',t.wel);_s('hunit',t.unit);_s('hbadge',t.badge);_s('hctxt',t.crisis);
+  _s('nh',t.nh);_s('nci',t.nci);_s('npr',t.npr);_s('npm',t.npm);
+}
+// nav
+const TM={home:'s-home',checkin:'s-checkin',progress:'s-progress',premium:'s-premium'};
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');}
+function gT(t){go(TM[t]||'s-home');}
+// helpers
+function tog(el){el.classList.toggle('sel');}
+function selC(el){el.closest('.cgrid').querySelectorAll('.ccard').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function sel1(el){el.closest('.pills').querySelectorAll('.pill').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
+function selM(el){el.closest('.moodrow').querySelectorAll('.moodc').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function selA(el){el.closest('.agrid').querySelectorAll('.ac').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function selP(el){el.closest('.planrow').querySelectorAll('.planc').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+// check-in
+const INS=['Intensidade mínima. Ótimo para fortalecer hábitos.','Muito baixo. Continue assim.','Baixo. Bom dia para reflexão.','Leve. Fique atento a gatilhos hoje.','Moderado. Evite situações de risco.','Atenção. Acione o modo crise se piorar.','Elevado. Use o modo crise agora.','Alto. Saia do ambiente se possível.','Muito alto. Acione o modo crise.','Crítico. Ligue para alguém de confiança.','Emergência — você não está sozinho.'];
+function onSl(v){_s('cval',v);_s('citxt',INS[+v]);}
+function saveCi(){const b=document.getElementById('cisave');b.textContent='✓ Salvo!';b.style.background='var(--green)';setTimeout(()=>{b.textContent='Salvar check-in';b.style.background='';gT('home');},1200);}
+// crisis
+let ti=null;
+function crS2(){sh('cs1',false);sh('cs2',true);sh('cs3',false);sh('cres',false);}
+function crS3(){
+  sh('cs2',false);sh('cs3',true);
+  let s=60;const d=document.getElementById('tdisp'),f=document.getElementById('tfill');
+  f.style.width='100%';clearInterval(ti);
+  ti=setInterval(()=>{s--;d.textContent='0:'+(s<10?'0':'')+s;f.style.width=(s/60*100)+'%';if(s<=0){clearInterval(ti);d.textContent='0:00';}},1000);
+}
+function crRes(){clearInterval(ti);sh('cs3',false);sh('cres',true);}
+function resetCr(){clearInterval(ti);sh('cs1',true);sh('cs2',false);sh('cs3',false);sh('cres',false);document.getElementById('tdisp').textContent='1:00';document.getElementById('tfill').style.width='100%';}
+function sh(id,v){const e=document.getElementById(id);if(e)e.style.display=v?'flex':'none';}
+// relapse
+function saveRl(){go('s-rl-done');setTimeout(()=>gT('home'),2800);}
+// clock
+function tick(){const n=new Date();document.getElementById('clock').textContent=n.getHours()+':'+String(n.getMinutes()).padStart(2,'0');}
+tick();setInterval(tick,30000);
+</script>
+</body>
+</html>
