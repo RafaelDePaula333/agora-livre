@@ -77,9 +77,13 @@ export function useCrisisMode(userId: string) {
         trigger_emotions: state.emotions,
         intensity:        state.intensity,
         actions_used:     [],
+        ended_at:         null,
+        urge_decreased:   false,
+        timer_completed:  false,
       })
       .select('id')
       .single();
+
 
     if (error) {
       console.error('[CrisisMode] Failed to create session:', error.message);

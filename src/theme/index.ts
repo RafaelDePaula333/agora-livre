@@ -39,6 +39,14 @@ export const Colors = {
 
   white:       '#FFFFFF',
   black:       '#0F172A',
+  
+  // Gradients (Represented as color pairs for LinearGradient)
+  gradientBlue: ['#2563EB', '#3B82F6'],
+  gradientSky:  ['#F8FAFC', '#EFF6FF'],
+  
+  // Glassmorphism
+  glass:        'rgba(255, 255, 255, 0.7)',
+  glassBorder:  'rgba(255, 255, 255, 0.3)',
 } as const;
 
 export const Typography = {
@@ -73,6 +81,7 @@ export const Radius = {
   md:   12,
   lg:   16,
   xl:   20,
+  '2xl': 32,
   full: 999,
 } as const;
 
@@ -90,10 +99,17 @@ export const Spacing = {
 export const Shadow = {
   card: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
     elevation: 3,
+  },
+  premium: {
+    shadowColor: Colors.blue,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 10,
   },
   button: {
     shadowColor: Colors.blue,
@@ -110,3 +126,4 @@ export const Shadow = {
     elevation: 8,
   },
 } as const;
+

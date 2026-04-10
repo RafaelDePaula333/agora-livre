@@ -12,6 +12,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import type { Session } from '@supabase/supabase-js';
 
 import { supabase } from './src/lib/supabase';
+import { setupNotificationHandler } from './src/lib/notifications';
 import { Colors, FontWeight } from './src/theme';
 import { t } from './src/i18n';
 
@@ -69,8 +70,17 @@ export default function App() {
   const [isNewUser, setIsNewUser] = useState(false);
   const [ready,     setReady]     = useState(false);
 
-  // Fonte temporariamente desabilitada pois a pasta assets não foi encontrada
-  const fontsLoaded = true;
+  // Fontes comentadas para evitar erro de runtime enquanto os arquivos .ttf não são adicionados
+  const [fontsLoaded, fontError] = [true, null]; 
+  /*
+  const [fontsLoaded, fontError] = useFonts({
+    'Manrope-ExtraBold': require('./assets/fonts/Manrope-ExtraBold.ttf'),
+    'Manrope-Bold':      require('./assets/fonts/Manrope-Bold.ttf'),
+    'Manrope-Regular':   require('./assets/fonts/Manrope-Regular.ttf'),
+    'Inter-Regular':     require('./assets/fonts/Inter-Regular.ttf'),
+    'Inter-SemiBold':    require('./assets/fonts/Inter-SemiBold.ttf'),
+  });
+  */
 
 
   useEffect(() => {
@@ -94,9 +104,13 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => { if (ready && fontsLoaded) SplashScreen.hideAsync(); }, [ready, fontsLoaded]);
+  useEffect(() => {
+    if ((ready && fontsLoaded) || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [ready, fontsLoaded, fontError]);
 
-  if (!ready || !fontsLoaded) return null;
+  if (!ready || (!fontsLoaded && !fontError)) return null;
 
   return (
     <SafeAreaProvider>

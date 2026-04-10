@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     color:      Colors.white,
     fontSize:   FontSize.md,
     fontWeight: FontWeight.bold,
-    fontFamily: 'Manrope',
+    fontFamily: 'Manrope-Bold',
   },
   ghostBtn: {
     borderRadius:    Radius.lg,
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     fontSize:       FontSize.md,
     fontWeight:     FontWeight.extrabold,
     letterSpacing:  0.5,
-    fontFamily:     'Manrope',
+    fontFamily:     'Manrope-ExtraBold',
   },
   card: {
     backgroundColor: Colors.card,

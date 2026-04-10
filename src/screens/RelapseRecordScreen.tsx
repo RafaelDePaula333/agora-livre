@@ -56,6 +56,8 @@ export default function RelapseRecordScreen() {
         location,
         emotion,
         intensity,
+        notes:       '',
+
       });
 
     // Also reset sober_since in profile

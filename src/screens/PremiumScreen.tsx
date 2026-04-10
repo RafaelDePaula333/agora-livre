@@ -161,7 +161,8 @@ export default function PremiumScreen() {
   function priceFor(plan: PlanType): string {
     const product = products.find(p => p.productId === SKUS[plan]);
     // Use localizedPrice from Play Store when available
-    return product?.localizedPrice ?? t(plan === 'monthly' ? 'monthlyPrice' : 'annualPrice');
+    return (product as any)?.localizedPrice || (product as any)?.price || t(plan === 'monthly' ? 'monthlyPrice' : 'annualPrice');
+
   }
 
   if (isPremium) {

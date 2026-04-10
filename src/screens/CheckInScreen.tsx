@@ -62,6 +62,8 @@ export default function CheckInScreen() {
         mood,
         emotions,
         urge_intensity: intensity,
+        notes:          '',
+
       }, { onConflict: 'user_id,date' });
 
     setSaving(false);
