@@ -16,6 +16,8 @@ export interface Database {
           trigger_causes:      string[];
           coping_strategies:   string[];
           sober_since:         string;
+          daily_cost:          number;
+          daily_time_waste:    number;
           lang:                string;
           is_premium:          boolean;
           created_at:          string;
@@ -33,6 +35,7 @@ export interface Database {
           mood:           string;
           emotions:       string[];
           urge_intensity: number;
+          time_investment: string | null;
           notes:          string | null;
           created_at:     string;
         };

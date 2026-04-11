@@ -83,6 +83,8 @@ export interface UserInsights {
   crisesAvoided:   number;
   currentStreak:   number;
   longestStreak:   number;
+  totalSavings?:    number;
+  totalTimeSaved?:  number;
 }
 
 // ─── Subscription ───────────────────────────────────────────────────

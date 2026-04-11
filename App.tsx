@@ -8,7 +8,7 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
 import { Text } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Session } from '@supabase/supabase-js';
 
 import { supabase } from './src/lib/supabase';
@@ -45,16 +45,28 @@ function HomeStackNavigator() {
 }
 
 function MainTabNavigator() {
+  const insets = useSafeAreaInsets();
   const ICONS: Record<string, string> = { Home: '🏠', CheckIn: '📋', Progress: '📊', Premium: '⭐' };
+
   return (
     <MainTab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: { backgroundColor: Colors.card, borderTopColor: Colors.border, borderTopWidth: 1, paddingBottom: 14, paddingTop: 8, height: 68 },
+        tabBarStyle: {
+          backgroundColor: Colors.card,
+          borderTopColor: Colors.border,
+          borderTopWidth: 1,
+          height: 64 + insets.bottom,
+          paddingBottom: insets.bottom + 8,
+          paddingTop: 12,
+        },
         tabBarActiveTintColor:   Colors.blue,
         tabBarInactiveTintColor: Colors.placeholder,
-        tabBarLabelStyle: { fontSize: 9, fontWeight: FontWeight.bold, marginTop: 2 },
-        tabBarIcon: ({ color, focused }) => <Text style={{ fontSize: focused ? 20 : 18, color }}>{ICONS[route.name]}</Text>,
+        tabBarLabelStyle: { fontSize: 11, fontWeight: FontWeight.bold, marginTop: 4 },
+        tabBarIconStyle: { marginBottom: 2 },
+        tabBarIcon: ({ color, focused }) => (
+          <Text style={{ fontSize: focused ? 22 : 20, color }}>{ICONS[route.name]}</Text>
+        ),
       })}
     >
       <MainTab.Screen name="Home"     component={HomeStackNavigator} options={{ tabBarLabel: t('navHome')     }} />

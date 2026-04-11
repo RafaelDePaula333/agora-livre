@@ -30,7 +30,7 @@ export default function ProgressScreen() {
     // Profile
     const { data: profile } = await supabase
       .from('profiles')
-      .select('sober_since, is_premium')
+      .select('sober_since, is_premium, daily_cost, daily_time_waste')
       .eq('id', user.id)
       .single();
 
@@ -102,6 +102,8 @@ export default function ProgressScreen() {
       riskDay:          'quinta-feira',      // TODO: compute from crisis_sessions
       riskTime:         'noite',
       topTrigger:       'anxiety',
+      totalSavings:     soberDays * (profile?.daily_cost ?? 0),
+      totalTimeSaved:   soberDays * (profile?.daily_time_waste ?? 0),
     });
   }
 
@@ -150,6 +152,22 @@ export default function ProgressScreen() {
             <Text style={styles.statLbl}>{t('crisesAvoided')}</Text>
           </View>
         </View>
+
+        {/* Calculator Results */}
+        <Card style={styles.impactCard}>
+          <Text style={styles.chartTitle}>IMPACTO ACUMULADO</Text>
+          <View style={styles.impactRow}>
+            <View style={styles.impactItem}>
+              <Text style={styles.impactNum}>R$ {insights?.totalSavings?.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) ?? '0,00'}</Text>
+              <Text style={styles.impactLbl}>Economizados</Text>
+            </View>
+            <View style={[styles.impactItem, { borderLeftWidth: 1, borderLeftColor: Colors.border }]}>
+              <Text style={styles.impactNum}>{Math.floor((insights?.totalTimeSaved ?? 0) / 60)}h { (insights?.totalTimeSaved ?? 0) % 60}m</Text>
+              <Text style={styles.impactLbl}>Tempo Recobrado</Text>
+            </View>
+          </View>
+        </Card>
+
 
         {/* Weekly bar chart */}
         <Card style={styles.chartCard}>
@@ -307,4 +325,30 @@ const styles = StyleSheet.create({
   premiumTag:    { backgroundColor: Colors.blueSoft, borderRadius: Radius.sm, paddingVertical: 3, paddingHorizontal: Spacing.sm },
   premiumTagText: { fontSize: FontSize.xs, color: Colors.blue, fontWeight: FontWeight.bold },
   insightList:   { gap: 0 },
+  impactCard: {
+    backgroundColor: Colors.blueSoft,
+    borderColor:     Colors.blueBorder,
+    gap:             Spacing.sm,
+  },
+  impactRow: {
+    flexDirection: 'row',
+    marginTop:     Spacing.sm,
+  },
+  impactItem: {
+    flex:        1,
+    alignItems:  'center',
+    paddingVertical: Spacing.sm,
+  },
+  impactNum: {
+    fontFamily: 'Manrope',
+    fontSize:   FontSize.xl,
+    fontWeight: FontWeight.extrabold,
+    color:      Colors.blue,
+  },
+  impactLbl: {
+    fontSize:   FontSize.xs,
+    color:      Colors.muted,
+    fontWeight: FontWeight.semibold,
+    marginTop:  2,
+  },
 });

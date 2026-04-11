@@ -19,8 +19,9 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Card, CrisisButton, InsightBox } from '../components';
+import { Card, CrisisButton, EditorialCard, InsightBox } from '../components';
 import { t } from '../i18n';
+import { getPatternInsights, type PatternInsight } from '../lib/insights';
 import { cancelAllNotifications, requestNotificationPermissions, scheduleSmartReminders } from '../lib/notifications';
 import { deleteAccount, signOut, supabase } from '../lib/supabase';
 import { Colors, FontSize, FontWeight, Radius, Shadow, Spacing } from '../theme';
@@ -37,9 +38,11 @@ export default function HomeScreen() {
   const [soberDays,       setSoberDays]       = useState(0);
   const [bestStreak,      setBestStreak]      = useState(0);
   const [weekData,        setWeekData]        = useState<WeeklyProgress[]>([]);
-  const [refreshing,      setRefreshing]      = useState(false);
-  const [settingsVisible, setSettingsVisible] = useState(false);
+  const [refreshing,       setRefreshing]       = useState(false);
+  const [settingsVisible,  setSettingsVisible]  = useState(false);
   const [remindersEnabled, setRemindersEnabled] = useState(false);
+  const [recentInvestment, setRecentInvestment] = useState<string | null>(null);
+  const [riskPattern,      setRiskPattern]      = useState<PatternInsight | null>(null);
 
   async function loadData() {
     // Auth & Basic Data
@@ -51,6 +54,22 @@ export default function HomeScreen() {
       const days = Math.floor((Date.now() - new Date(profile.sober_since).getTime()) / 86_400_000);
       setSoberDays(Math.max(0, days));
     }
+
+    // Recent Investment (Conversão de Energia)
+    const { data: lastCheckin } = await supabase
+      .from('checkins')
+      .select('time_investment')
+      .eq('user_id', user.id)
+      .not('time_investment', 'is', null)
+      .order('date', { ascending: false })
+      .limit(1)
+      .single();
+    
+    setRecentInvestment(lastCheckin?.time_investment ?? null);
+
+    // AI Patterns (IA Preditiva)
+    const pattern = await getPatternInsights();
+    setRiskPattern(pattern.riskDay ? pattern : null);
 
     const since = new Date();
     since.setDate(since.getDate() - 6);
@@ -222,7 +241,36 @@ export default function HomeScreen() {
           </View>
         </Card>
 
+        {/* Predictive AI Alert */}
+        {riskPattern && (
+          <EditorialCard 
+            image="https://images.unsplash.com/photo-1516339901600-2e1a6298ed34?q=80&w=500"
+            style={styles.editorialSpace}
+          >
+            <Text style={styles.editorialTag}>⚠️ ALERTA DE PADRÃO</Text>
+            <Text style={styles.editorialTitle}>
+              Com base no seu histórico, as {riskPattern.riskDay}s à {riskPattern.riskTime} costumam ser desafiadoras.
+            </Text>
+            <Text style={styles.editorialSub}>Preparamos uma meditação guiada para você.</Text>
+          </EditorialCard>
+        )}
+
+        {/* Energy Conversion Insight */}
+        {recentInvestment && (
+          <EditorialCard 
+            image="https://images.unsplash.com/photo-1490730141103-6cac27aaab94?q=80&w=500"
+            style={styles.editorialSpace}
+          >
+            <Text style={styles.editorialTag}>✨ CONVERSÃO DE ENERGIA</Text>
+            <Text style={styles.editorialTitle}>
+              Recuperado: {recentInvestment}
+            </Text>
+            <Text style={styles.editorialSub}>Isso é o que você ganha ao escolher a sobriedade hoje.</Text>
+          </EditorialCard>
+        )}
+
         <InsightBox tag={t('insight')} text={t('insightText')} />
+
 
         <View style={styles.footer}>
           <Text style={styles.disclaimer}>
@@ -325,6 +373,10 @@ const styles = StyleSheet.create({
     borderColor:     'rgba(255,255,255,0.2)',
   },
   counterBadgeText: { fontSize: FontSize.sm, color: Colors.white, fontWeight: FontWeight.semibold },
+  editorialSpace: { marginBottom: Spacing.sm },
+  editorialTag: { fontSize: 10, fontWeight: FontWeight.extrabold, color: 'rgba(255,255,255,0.7)', letterSpacing: 1, marginBottom: 4 },
+  editorialTitle: { fontSize: FontSize.md, fontWeight: FontWeight.bold, color: Colors.white, lineHeight: 22 },
+  editorialSub: { fontSize: FontSize.xs, color: 'rgba(255,255,255,0.6)', marginTop: 4, fontWeight: FontWeight.medium },
 
   crisisWrap: { 
     marginTop: 4,

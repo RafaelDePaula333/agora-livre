@@ -10,6 +10,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -39,6 +40,9 @@ export default function PremiumScreen() {
   const [products,     setProducts]     = useState<RNIap.Subscription[]>([]);
   const [loading,      setLoading]      = useState(false);
   const [isPremium,    setIsPremium]    = useState(false);
+  const [dailyCost,    setDailyCost]    = useState('0');
+  const [dailyTime,    setDailyTime]    = useState('0');
+  const [savingConfig, setSavingConfig] = useState(false);
 
   // ── Init IAP connection & fetch products ───────────────────────────
   useEffect(() => {
@@ -65,15 +69,17 @@ export default function PremiumScreen() {
           setLoading(false);
         });
 
-        // Check current premium status
+        // Check current premium status & config
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const { data: profile } = await supabase
             .from('profiles')
-            .select('is_premium')
+            .select('is_premium, daily_cost, daily_time_waste')
             .eq('id', user.id)
             .single();
           setIsPremium(profile?.is_premium ?? false);
+          setDailyCost(String(profile?.daily_cost ?? 0));
+          setDailyTime(String(profile?.daily_time_waste ?? 0));
         }
       } catch (e) {
         console.error('[IAP] Init failed:', e);
@@ -88,6 +94,30 @@ export default function PremiumScreen() {
       RNIap.endConnection();
     };
   }, []);
+
+  async function saveCalculatorConfig() {
+    setSavingConfig(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          daily_cost:       parseFloat(dailyCost) || 0,
+          daily_time_waste: parseInt(dailyTime) || 0,
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      Alert.alert('Sucesso', 'Configurações da calculadora salvas!');
+    } catch (e) {
+      console.error('[Config] Save failed:', e);
+      Alert.alert('Erro', 'Não foi possível salvar as configurações.');
+    } finally {
+      setSavingConfig(false);
+    }
+  }
 
   // ── Handle completed purchase ──────────────────────────────────────
   async function handlePurchase(purchase: RNIap.SubscriptionPurchase) {
@@ -252,6 +282,44 @@ export default function PremiumScreen() {
           {'\n'}A assinatura renova automaticamente. Cancele a qualquer momento nas configurações da Play Store.
         </Text>
 
+        {/* Calculator Config Section */}
+        <View style={styles.extraConfig}>
+          <Text style={styles.sectionTitle}>Calculadora de Impacto</Text>
+          <Text style={styles.sectionSub}>Configure para ver quanto você economiza</Text>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Gasto diário (R$)</Text>
+            <TextInput
+              style={styles.input}
+              value={dailyCost}
+              onChangeText={setDailyCost}
+              keyboardType="numeric"
+              placeholder="0,00"
+              placeholderTextColor={Colors.placeholder}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Tempo desperdiçado p/ dia (min)</Text>
+            <TextInput
+              style={styles.input}
+              value={dailyTime}
+              onChangeText={setDailyTime}
+              keyboardType="numeric"
+              placeholder="0"
+              placeholderTextColor={Colors.placeholder}
+            />
+          </View>
+
+          <PrimaryButton
+            label={savingConfig ? 'Salvando...' : 'Salvar Configurações'}
+            onPress={saveCalculatorConfig}
+            disabled={savingConfig}
+            style={{ marginTop: Spacing.sm }}
+          />
+        </View>
+
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -338,4 +406,41 @@ const styles = StyleSheet.create({
   premiumEmoji:   { fontSize: 64 },
   premiumTitle:   { fontFamily: 'Manrope', fontSize: FontSize['2xl'], fontWeight: FontWeight.extrabold, color: Colors.text },
   premiumSub:     { fontSize: FontSize.md, color: Colors.muted, textAlign: 'center', lineHeight: 22 },
+  extraConfig: {
+    marginTop:       Spacing.md,
+    backgroundColor: Colors.card,
+    borderRadius:    Radius.xl,
+    padding:         Spacing.lg,
+    borderWidth:     1,
+    borderColor:     Colors.border,
+    gap:             Spacing.md,
+  },
+  sectionTitle: {
+    fontSize:   FontSize.lg,
+    fontWeight: FontWeight.bold,
+    color:      Colors.text,
+  },
+  sectionSub: {
+    fontSize:     FontSize.sm,
+    color:        Colors.faint,
+    marginBottom: Spacing.xs,
+  },
+  inputGroup: {
+    gap: 6,
+  },
+  inputLabel: {
+    fontSize:   FontSize.xs,
+    fontWeight: FontWeight.bold,
+    color:      Colors.muted,
+    textTransform: 'uppercase',
+  },
+  input: {
+    backgroundColor: Colors.bg,
+    borderRadius:    Radius.md,
+    padding:         Spacing.md,
+    fontSize:        FontSize.base,
+    color:           Colors.text,
+    borderWidth:     1,
+    borderColor:     Colors.border,
+  },
 });

@@ -14,6 +14,8 @@ create table public.profiles (
   trigger_causes      text[] not null default '{}',
   coping_strategies   text[] not null default '{}',
   sober_since         date not null default current_date,
+  daily_cost          numeric default 0,
+  daily_time_waste    integer default 0,
   lang                text not null default 'pt'
                         check (lang in ('pt','en','es','nl','ro')),
   is_premium          boolean not null default false,
@@ -29,6 +31,7 @@ create table public.checkins (
   mood            text not null check (mood in ('good','neutral','bad')),
   emotions        text[] not null default '{}',
   urge_intensity  smallint not null check (urge_intensity between 0 and 10),
+  time_investment text,
   notes           text,
   created_at      timestamptz not null default now(),
   unique (user_id, date)     -- one check-in per day

@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -15,15 +16,26 @@ import { Card, InsightBox, MoodCard, PrimaryButton, SectionLabel, SelectPill } f
 import { EMOTIONS } from '../hooks/useCrisisMode';
 import { t } from '../i18n';
 import { supabase } from '../lib/supabase';
-import { Colors, FontSize, FontWeight, Spacing } from '../theme';
+import { Colors, FontSize, FontWeight, Radius, Spacing } from '../theme';
 import type { Emotion, Mood } from '../types';
 
+const INVESTMENTS = [
+  { id: 'study',    icon: '📚', label: 'Estudos' },
+  { id: 'family',   icon: '👨‍👩‍👧', label: 'Família' },
+  { id: 'work',     icon: '💼', label: 'Trabalho' },
+  { id: 'hobby',    icon: '🎨', label: 'Hobby' },
+  { id: 'health',   icon: '🏃', label: 'Saúde' },
+  { id: 'rest',     icon: '😴', label: 'Descanso' },
+];
+
 export default function CheckInScreen() {
-  const [mood,      setMood]      = useState<Mood | null>(null);
-  const [emotions,  setEmotions]  = useState<Emotion[]>([]);
-  const [intensity, setIntensity] = useState<number>(3);
-  const [saving,    setSaving]    = useState(false);
-  const [saved,     setSaved]     = useState(false);
+  const [mood,           setMood]           = useState<Mood | null>(null);
+  const [emotions,       setEmotions]       = useState<Emotion[]>([]);
+  const [intensity,      setIntensity]      = useState<number>(3);
+  const [timeInvestment, setTimeInvestment] = useState<string>('');
+  const [saving,         setSaving]         = useState(false);
+  const [saved,          setSaved]          = useState(false);
+
 
   const MOODS: { id: Mood; icon: string; labelKey: string }[] = [
     { id: 'good',    icon: '😌', labelKey: 'moodGood'    },
@@ -57,13 +69,13 @@ export default function CheckInScreen() {
     const { error } = await supabase
       .from('checkins')
       .upsert({
-        user_id:        user.id,
-        date:           today,
+        user_id:         user.id,
+        date:            today,
         mood,
         emotions,
-        urge_intensity: intensity,
-        notes:          '',
-
+        urge_intensity:  intensity,
+        time_investment: timeInvestment,
+        notes:           '',
       }, { onConflict: 'user_id,date' });
 
     setSaving(false);
@@ -143,8 +155,29 @@ export default function CheckInScreen() {
           </View>
         </Card>
 
+        {/* Energy Conversion (New Section) */}
+        <SectionLabel>Conversão de Energia</SectionLabel>
+        <Text style={styles.sectionDesc}>Onde você investiu o tempo que antes gastava no vício?</Text>
+        <View style={styles.pillsWrap}>
+          {INVESTMENTS.map(item => (
+            <SelectPill
+              key={item.id}
+              label={`${item.icon} ${item.label}`}
+              selected={timeInvestment.includes(item.label)}
+              onPress={() => {
+                const labels = timeInvestment ? timeInvestment.split(', ') : [];
+                const next = labels.includes(item.label)
+                  ? labels.filter(l => l !== item.label)
+                  : [...labels, item.label];
+                setTimeInvestment(next.join(', '));
+              }}
+            />
+          ))}
+        </View>
+
         {/* Insight */}
         {mood && <InsightBox tag={t('insight')} text={getInsight()} />}
+
 
         <PrimaryButton
           label={t('saveCheckIn')}
@@ -164,8 +197,10 @@ const styles = StyleSheet.create({
 
   title: { fontFamily: 'Manrope', fontSize: FontSize['2xl'], fontWeight: FontWeight.extrabold, color: Colors.text },
   sub:   { fontSize: FontSize.base, color: Colors.faint, marginTop: -Spacing.sm },
+  sectionDesc: { fontSize: FontSize.xs, color: Colors.faint, marginTop: -Spacing.md, marginBottom: Spacing.sm },
 
   moodRow: { flexDirection: 'row', gap: Spacing.sm },
+
 
   pillsWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, marginTop: -Spacing.sm },
 

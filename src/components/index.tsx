@@ -5,13 +5,55 @@ import React from 'react';
 import {
   ActivityIndicator,
   Animated,
+  ImageBackground,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   type ViewStyle,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, FontSize, FontWeight, Radius, Shadow, Spacing } from '../theme';
+
+// ─── EditorialCard ──────────────────────────────────────────────────
+interface EditorialCardProps {
+  children:  React.ReactNode;
+  image:     string;
+  style?:    ViewStyle;
+  overlay?:  boolean;
+}
+
+export function EditorialCard({ children, image, style, overlay = true }: EditorialCardProps) {
+  const opacity = React.useRef(new Animated.Value(0)).current;
+
+  React.useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+  }, [opacity]);
+
+  return (
+    <Animated.View style={{ opacity }}>
+      <ImageBackground
+        source={{ uri: image }}
+        style={[styles.editorialCard, style]}
+        imageStyle={{ borderRadius: Radius.xl }}
+      >
+        {overlay && (
+          <LinearGradient
+            colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)']}
+            style={styles.editorialOverlay}
+          />
+        )}
+        <View style={styles.editorialContent}>
+          {children}
+        </View>
+      </ImageBackground>
+    </Animated.View>
+  );
+}
 
 // ─── PrimaryButton ────────────────────────────────────────────────────
 interface PrimaryButtonProps {
@@ -367,5 +409,20 @@ const styles = StyleSheet.create({
     letterSpacing: 0.7,
     textTransform: 'uppercase',
     marginBottom:  Spacing.sm,
+  },
+  editorialCard: {
+    minHeight:      160,
+    borderRadius:   Radius.xl,
+    overflow:       'hidden',
+    justifyContent: 'flex-end',
+    ...Shadow.card,
+  },
+  editorialOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: Radius.xl,
+  },
+  editorialContent: {
+    padding:       Spacing.lg,
+    zIndex:        10,
   },
 });
